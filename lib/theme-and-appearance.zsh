@@ -6,6 +6,8 @@ export LSCOLORS="Gxfxcxdxbxegedabagacad"
 
 # TODO organise this chaotic logic
 
+[ -z ${DISABLE_LS_COLORS+x} ] &&
+	DISABLE_LS_COLORS='false'
 if [[ "$DISABLE_LS_COLORS" != "true" ]]; then
   # Find the option for using colors in ls, depending on the version
   if [[ "$OSTYPE" == netbsd* ]]; then
@@ -43,6 +45,8 @@ setopt auto_cd
 setopt multios
 setopt prompt_subst
 
+[ -z ${WINDOW+x} ] &&
+	WINDOW=''
 [[ -n "$WINDOW" ]] && SCREEN_NO="%B$WINDOW%b " || SCREEN_NO=""
 
 # Apply theming defaults
