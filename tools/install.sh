@@ -26,7 +26,7 @@ main() {
 
   if ! command -v zsh >/dev/null 2>&1; then
     printf "${YELLOW}Zsh is not installed!${NORMAL} Please install zsh first!\n"
-    exit
+    #exit
   fi
 
   if [ ! -n "$ZSH" ]; then
