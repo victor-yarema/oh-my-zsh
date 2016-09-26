@@ -24,11 +24,13 @@ function parse_git_dirty() {
       FLAGS+='--untracked-files=no'
     fi
     STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
-  fi
-  if [[ -n $STATUS ]]; then
-    echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
+    if [[ -n $STATUS ]]; then
+      echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
+    else
+      echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
+    fi
   else
-    echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
+    echo "$ZSH_THEME_GIT_PROMPT_UNKNOWN"
   fi
 }
 
