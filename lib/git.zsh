@@ -1,9 +1,28 @@
+__GitApp() (
+  [ -z "${GitApp+x}" ] ||
+  {
+    echo "${GitApp}"
+    return
+  }
+
+  GitAlt="$(git config --get zsh.git-alt)"
+  if [[ "${GitAlt}" == "" ]]; then
+    echo 'git'
+  else
+    echo "${GitAlt}"
+  fi
+)
+
 # Outputs current branch info in prompt format
 function git_prompt_info() {
+  local GitApp="$(__GitApp)"
+  "${GitApp}" rev-parse --is-inside-git-dir 2> /dev/null > /dev/null ||
+  return 0
+  local HideStatus="$(command "${GitApp}" config --get oh-my-zsh.hide-status 2>/dev/null)"
   local ref
-  if [[ "$(command git config --get oh-my-zsh.hide-status 2>/dev/null)" != "1" ]]; then
-    ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
-    ref=$(command git rev-parse --short HEAD 2> /dev/null) || return 0
+  if [[ "${HideStatus}" != "1" ]]; then
+    ref=$(command "${GitApp}" symbolic-ref HEAD 2> /dev/null) || \
+    ref=$(command "${GitApp}" rev-parse --short HEAD 2> /dev/null) || return 0
     echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$(parse_git_dirty)$ZSH_THEME_GIT_PROMPT_SUFFIX"
   fi
 }
@@ -13,17 +32,19 @@ function git_prompt_info() {
 
 # Checks if working tree is dirty
 function parse_git_dirty() {
+  local GitApp="$(__GitApp)"
   local STATUS=''
+  local HideDirty="$(command "${GitApp}" config --get oh-my-zsh.hide-dirty)"
   local -a FLAGS
   FLAGS=('--porcelain')
-  if [[ "$(command git config --get oh-my-zsh.hide-dirty)" != "1" ]]; then
+  if [[ "${HideDirty}" != "1" ]]; then
     if [[ $POST_1_7_2_GIT -gt 0 ]]; then
       FLAGS+='--ignore-submodules=dirty'
     fi
     if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
       FLAGS+='--untracked-files=no'
     fi
-    STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
+    STATUS=$(command "${GitApp}" status ${FLAGS} 2> /dev/null | tail -n1)
     if [[ -n $STATUS ]]; then
       echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
     else
