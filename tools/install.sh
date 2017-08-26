@@ -61,7 +61,7 @@ main() {
   fi
 
   Url=https://victor-yarema@github.com/victor-yarema/oh-my-zsh &&
-  env git clone --depth=1 "${Url}" "$ZSH" || {
+  env git clone --depth 64 "${Url}" "$ZSH" || {
     printf "Error: git clone of oh-my-zsh repo failed\n"
     exit 1
   }
