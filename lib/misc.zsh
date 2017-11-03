@@ -34,6 +34,10 @@ else
 fi
 
 # only define LC_CTYPE if undefined
+[ -z ${LC_CTYPE+x} ] &&
+	LC_CTYPE=''
+[ -z ${LC_ALL+x} ] &&
+	LC_ALL=''
 if [[ -z "$LC_CTYPE" && -z "$LC_ALL" ]]; then
 	export LC_CTYPE=${LANG%%:*} # pick the first entry from LANG
 fi
