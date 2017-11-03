@@ -8,6 +8,9 @@ function git_prompt_info() {
   fi
 }
 
+[ -z ${DISABLE_UNTRACKED_FILES_DIRTY+x} ] &&
+	DISABLE_UNTRACKED_FILES_DIRTY='false'
+
 # Checks if working tree is dirty
 function parse_git_dirty() {
   local STATUS=''
