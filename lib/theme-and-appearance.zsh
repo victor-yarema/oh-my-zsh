@@ -27,9 +27,13 @@ if [[ "$DISABLE_LS_COLORS" != "true" ]]; then
 
     # only use coreutils ls if there is a dircolors customization present ($LS_COLORS or .dircolors file)
     # otherwise, gls will use the default color scheme which is ugly af
+    [ -z ${LS_COLORS+x} ] &&
+      LS_COLORS=''
     [[ -n "$LS_COLORS" || -f "$HOME/.dircolors" ]] && gls --color -d . &>/dev/null && alias ls='gls --color=tty'
   else
     # For GNU ls, we use the default ls color theme. They can later be overwritten by themes.
+    [ -z ${LS_COLORS+x} ] &&
+      LS_COLORS=''
     if [[ -z "$LS_COLORS" ]]; then
       (( $+commands[dircolors] )) && eval "$(dircolors -b)"
     fi
@@ -37,6 +41,8 @@ if [[ "$DISABLE_LS_COLORS" != "true" ]]; then
     ls --color -d . &>/dev/null && alias ls='ls --color=tty' || { ls -G . &>/dev/null && alias ls='ls -G' }
 
     # Take advantage of $LS_COLORS for completion as well.
+    [ -z ${LS_COLORS+x} ] &&
+      LS_COLORS=''
     zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
   fi
 fi
