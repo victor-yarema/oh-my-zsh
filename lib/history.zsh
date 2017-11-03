@@ -1,3 +1,6 @@
+[ -z ${HISTFILE+x} ] &&
+	HISTFILE=''
+
 ## History wrapper
 function omz_history {
   # Delete the history file if `-c' argument provided.
