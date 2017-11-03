@@ -1,5 +1,7 @@
 # Set ZSH_CACHE_DIR to the path where cache files should be created
 # or else we will use the default cache/
+[ -z ${ZSH_CACHE_DIR+x} ] &&
+	ZSH_CACHE_DIR=''
 if [[ -z "$ZSH_CACHE_DIR" ]]; then
   ZSH_CACHE_DIR="$ZSH/cache"
 fi
@@ -10,6 +12,10 @@ if [ -f ~/.zsh-update ] && [ ! -f ${ZSH_CACHE_DIR}/.zsh-update ]; then
 fi
 
 # Check for updates on initial load...
+[ -z ${DISABLE_AUTO_UPDATE+x} ] &&
+	DISABLE_AUTO_UPDATE='false'
+[ -z ${DISABLE_UPDATE_PROMPT+x} ] &&
+	DISABLE_UPDATE_PROMPT='false'
 if [ "$DISABLE_AUTO_UPDATE" != "true" ]; then
   env ZSH=$ZSH ZSH_CACHE_DIR=$ZSH_CACHE_DIR DISABLE_UPDATE_PROMPT=$DISABLE_UPDATE_PROMPT zsh -f $ZSH/tools/check_for_upgrade.sh
 fi
@@ -24,6 +30,8 @@ autoload -U compaudit compinit
 
 # Set ZSH_CUSTOM to the path where your custom config files
 # and plugins exists, or else we will use the default custom/
+[ -z ${ZSH_CUSTOM+x} ] &&
+	ZSH_CUSTOM=''
 if [[ -z "$ZSH_CUSTOM" ]]; then
     ZSH_CUSTOM="$ZSH/custom"
 fi
@@ -63,6 +71,8 @@ else
 fi
 
 # Save the location of the current completion dump file.
+[ -z ${ZSH_COMPDUMP+x} ] &&
+	ZSH_COMPDUMP=''
 if [ -z "$ZSH_COMPDUMP" ]; then
   ZSH_COMPDUMP="${ZDOTDIR:-${HOME}}/.zcompdump-${SHORT_HOST}-${ZSH_VERSION}"
 fi
