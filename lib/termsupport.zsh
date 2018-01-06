@@ -85,6 +85,9 @@ preexec_functions+=(omz_termsupport_preexec)
 # Based on this answer: https://superuser.com/a/315029
 # With extra fixes to handle multibyte chars and non-UTF-8 locales
 
+[ -z ${INSIDE_EMACS+x} ] &&
+  INSIDE_EMACS=''
+
 if [[ "$TERM_PROGRAM" == "Apple_Terminal" ]] && [[ -z "$INSIDE_EMACS" ]]; then
   # Emits the control sequence to notify Terminal.app of the cwd
   # Identifies the directory using a file: URI scheme, including
