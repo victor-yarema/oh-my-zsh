@@ -243,13 +243,15 @@ function git_compare_version() {
 # Outputs the name of the current user
 # Usage example: $(git_current_user_name)
 function git_current_user_name() {
-  command git config user.name 2>/dev/null
+  local GitApp="$(__GitApp)"
+  command "${GitApp}" config user.name 2>/dev/null
 }
 
 # Outputs the email of the current user
 # Usage example: $(git_current_user_email)
 function git_current_user_email() {
-  command git config user.email 2>/dev/null
+  local GitApp="$(__GitApp)"
+  command "${GitApp}" config user.email 2>/dev/null
 }
 
 # This is unlikely to change so make it all statically assigned
