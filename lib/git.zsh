@@ -57,11 +57,12 @@ function parse_git_dirty() {
 
 # Gets the difference between the local and remote branches
 function git_remote_status() {
+    local GitApp="$(__GitApp)"
     local remote ahead behind git_remote_status git_remote_status_detailed
-    remote=${$(command git rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+    remote=${$(command "${GitApp}" rev-parse --verify ${hook_com[branch]}@{upstream} --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
     if [[ -n ${remote} ]]; then
-        ahead=$(command git rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
-        behind=$(command git rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
+        ahead=$(command "${GitApp}" rev-list ${hook_com[branch]}@{upstream}..HEAD 2>/dev/null | wc -l)
+        behind=$(command "${GitApp}" rev-list HEAD..${hook_com[branch]}@{upstream} 2>/dev/null | wc -l)
 
         if [[ $ahead -eq 0 ]] && [[ $behind -eq 0 ]]; then
             git_remote_status="$ZSH_THEME_GIT_PROMPT_EQUAL_REMOTE"
@@ -89,12 +90,13 @@ function git_remote_status() {
 # Using '--quiet' with 'symbolic-ref' will not cause a fatal error (128) if
 # it's not a symbolic ref, but in a Git repo.
 function git_current_branch() {
+  local GitApp="$(__GitApp)"
   local ref
-  ref=$(command git symbolic-ref --quiet HEAD 2> /dev/null)
+  ref=$(command "${GitApp}" symbolic-ref --quiet HEAD 2> /dev/null)
   local ret=$?
   if [[ $ret != 0 ]]; then
     [[ $ret == 128 ]] && return  # no git repo.
-    ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
+    ref=$(command "${GitApp}" rev-parse --short HEAD 2> /dev/null) || return
   fi
   echo ${ref#refs/heads/}
 }
@@ -102,8 +104,9 @@ function git_current_branch() {
 
 # Gets the number of commits ahead from remote
 function git_commits_ahead() {
-  if command git rev-parse --git-dir &>/dev/null; then
-    local commits="$(git rev-list --count @{upstream}..HEAD 2>/dev/null)"
+  local GitApp="$(__GitApp)"
+  if command "${GitApp}" rev-parse --git-dir &>/dev/null; then
+    local commits="$("${GitApp}" rev-list --count @{upstream}..HEAD 2>/dev/null)"
     if [[ -n "$commits" && "$commits" != 0 ]]; then
       echo "$ZSH_THEME_GIT_COMMITS_AHEAD_PREFIX$commits$ZSH_THEME_GIT_COMMITS_AHEAD_SUFFIX"
     fi
@@ -112,8 +115,9 @@ function git_commits_ahead() {
 
 # Gets the number of commits behind remote
 function git_commits_behind() {
-  if command git rev-parse --git-dir &>/dev/null; then
-    local commits="$(git rev-list --count HEAD..@{upstream} 2>/dev/null)"
+  local GitApp="$(__GitApp)"
+  if command "${GitApp}" rev-parse --git-dir &>/dev/null; then
+    local commits="$("${GitApp}" rev-list --count HEAD..@{upstream} 2>/dev/null)"
     if [[ -n "$commits" && "$commits" != 0 ]]; then
       echo "$ZSH_THEME_GIT_COMMITS_BEHIND_PREFIX$commits$ZSH_THEME_GIT_COMMITS_BEHIND_SUFFIX"
     fi
@@ -122,21 +126,24 @@ function git_commits_behind() {
 
 # Outputs if current branch is ahead of remote
 function git_prompt_ahead() {
-  if [[ -n "$(command git rev-list origin/$(git_current_branch)..HEAD 2> /dev/null)" ]]; then
+  local GitApp="$(__GitApp)"
+  if [[ -n "$(command "${GitApp}" rev-list origin/$(git_current_branch)..HEAD 2> /dev/null)" ]]; then
     echo "$ZSH_THEME_GIT_PROMPT_AHEAD"
   fi
 }
 
 # Outputs if current branch is behind remote
 function git_prompt_behind() {
-  if [[ -n "$(command git rev-list HEAD..origin/$(git_current_branch) 2> /dev/null)" ]]; then
+  local GitApp="$(__GitApp)"
+  if [[ -n "$(command "${GitApp}" rev-list HEAD..origin/$(git_current_branch) 2> /dev/null)" ]]; then
     echo "$ZSH_THEME_GIT_PROMPT_BEHIND"
   fi
 }
 
 # Outputs if current branch exists on remote or not
 function git_prompt_remote() {
-  if [[ -n "$(command git show-ref origin/$(git_current_branch) 2> /dev/null)" ]]; then
+  local GitApp="$(__GitApp)"
+  if [[ -n "$(command "${GitApp}" show-ref origin/$(git_current_branch) 2> /dev/null)" ]]; then
     echo "$ZSH_THEME_GIT_PROMPT_REMOTE_EXISTS"
   else
     echo "$ZSH_THEME_GIT_PROMPT_REMOTE_MISSING"
@@ -145,20 +152,23 @@ function git_prompt_remote() {
 
 # Formats prompt string for current git commit short SHA
 function git_prompt_short_sha() {
+  local GitApp="$(__GitApp)"
   local SHA
-  SHA=$(command git rev-parse --short HEAD 2> /dev/null) && echo "$ZSH_THEME_GIT_PROMPT_SHA_BEFORE$SHA$ZSH_THEME_GIT_PROMPT_SHA_AFTER"
+  SHA=$(command "${GitApp}" rev-parse --short HEAD 2> /dev/null) && echo "$ZSH_THEME_GIT_PROMPT_SHA_BEFORE$SHA$ZSH_THEME_GIT_PROMPT_SHA_AFTER"
 }
 
 # Formats prompt string for current git commit long SHA
 function git_prompt_long_sha() {
+  local GitApp="$(__GitApp)"
   local SHA
-  SHA=$(command git rev-parse HEAD 2> /dev/null) && echo "$ZSH_THEME_GIT_PROMPT_SHA_BEFORE$SHA$ZSH_THEME_GIT_PROMPT_SHA_AFTER"
+  SHA=$(command "${GitApp}" rev-parse HEAD 2> /dev/null) && echo "$ZSH_THEME_GIT_PROMPT_SHA_BEFORE$SHA$ZSH_THEME_GIT_PROMPT_SHA_AFTER"
 }
 
 # Get the status of the working tree
 function git_prompt_status() {
+  local GitApp="$(__GitApp)"
   local INDEX STATUS
-  INDEX=$(command git status --porcelain -b 2> /dev/null)
+  INDEX=$(command "${GitApp}" status --porcelain -b 2> /dev/null)
   STATUS=""
   if $(echo "$INDEX" | command grep -E '^\?\? ' &> /dev/null); then
     STATUS="$ZSH_THEME_GIT_PROMPT_UNTRACKED$STATUS"
@@ -189,7 +199,7 @@ function git_prompt_status() {
   elif $(echo "$INDEX" | grep '^AD ' &> /dev/null); then
     STATUS="$ZSH_THEME_GIT_PROMPT_DELETED$STATUS"
   fi
-  if $(command git rev-parse --verify refs/stash >/dev/null 2>&1); then
+  if $(command "${GitApp}" rev-parse --verify refs/stash >/dev/null 2>&1); then
     STATUS="$ZSH_THEME_GIT_PROMPT_STASHED$STATUS"
   fi
   if $(echo "$INDEX" | grep '^UU ' &> /dev/null); then
@@ -211,9 +221,10 @@ function git_prompt_status() {
 # Outputs -1, 0, or 1 if the installed version is less than, equal to, or
 # greater than the input version, respectively.
 function git_compare_version() {
+  local GitApp="$(__GitApp)"
   local INPUT_GIT_VERSION INSTALLED_GIT_VERSION
   INPUT_GIT_VERSION=(${(s/./)1})
-  INSTALLED_GIT_VERSION=($(command git --version 2>/dev/null))
+  INSTALLED_GIT_VERSION=($(command "${GitApp}" --version 2>/dev/null))
   INSTALLED_GIT_VERSION=(${(s/./)INSTALLED_GIT_VERSION[3]})
 
   for i in {1..3}; do
