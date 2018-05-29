@@ -77,6 +77,8 @@ if [ -z "$ZSH_COMPDUMP" ]; then
   ZSH_COMPDUMP="${ZDOTDIR:-${HOME}}/.zcompdump-${SHORT_HOST}-${ZSH_VERSION}"
 fi
 
+[ -z ${ZSH_DISABLE_COMPFIX+x} ] &&
+	ZSH_DISABLE_COMPFIX=''
 if [[ $ZSH_DISABLE_COMPFIX != true ]]; then
   # If completion insecurities exist, warn the user
   if ! compaudit &>/dev/null; then
