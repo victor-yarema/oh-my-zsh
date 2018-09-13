@@ -1,6 +1,8 @@
-local Host="%{$fg[white]%}@%M"
+local User="%(!.%{%F{yellow}%}.)$USER"
+local Host="%{$fg[white]%}%M"
+local UserAtHost="${User} @ ${Host}"
 local ret_status="%(?:%{$fg_bold[green]%}0 :%{$fg_bold[red]%}%? )"
-PROMPT='${Host} ${ret_status}%{$bg[blue]$fg[white]%}%~%{$reset_color%} $(git_prompt_info)'
+PROMPT='${UserAtHost} ${ret_status}%{$bg[blue]$fg[white]%}%~%{$reset_color%} $(git_prompt_info)'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
