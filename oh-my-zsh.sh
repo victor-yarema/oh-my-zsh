@@ -12,11 +12,11 @@ if [ -f ~/.zsh-update ] && [ ! -f ${ZSH_CACHE_DIR}/.zsh-update ]; then
 fi
 
 # Check for updates on initial load...
-[ -z ${DISABLE_AUTO_UPDATE+x} ] &&
-	DISABLE_AUTO_UPDATE='false'
+[ -z ${ENABLE_AUTO_UPDATE+x} ] &&
+	ENABLE_AUTO_UPDATE='false'
 [ -z ${DISABLE_UPDATE_PROMPT+x} ] &&
 	DISABLE_UPDATE_PROMPT='false'
-if [ "$DISABLE_AUTO_UPDATE" != "true" ]; then
+if [ "$ENABLE_AUTO_UPDATE" = "true" ]; then
   env ZSH=$ZSH ZSH_CACHE_DIR=$ZSH_CACHE_DIR DISABLE_UPDATE_PROMPT=$DISABLE_UPDATE_PROMPT zsh -f $ZSH/tools/check_for_upgrade.sh
 fi
 
