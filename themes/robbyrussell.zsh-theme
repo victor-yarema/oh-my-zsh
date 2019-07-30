@@ -1,5 +1,5 @@
 local Host="%{$fg[white]%}@%M"
-local ret_status="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}%? )"
+local ret_status="%(?:%{$fg_bold[green]%}0 :%{$fg_bold[red]%}%? )"
 PROMPT='${Host} ${ret_status}%{$bg[blue]$fg[white]%}%~%{$reset_color%} $(git_prompt_info)'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
