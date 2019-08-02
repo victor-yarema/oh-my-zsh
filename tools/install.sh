@@ -29,13 +29,9 @@ main() {
     exit
   fi
 
-  if [ ! -n "$ZSH" ]; then
-    ZSH=~/.oh-my-zsh
-  fi
-
-  if [ -d "$ZSH" ]; then
+  if [ -d "$OhMyZshDir" ]; then
     printf "${YELLOW}You already have Oh My Zsh installed.${NORMAL}\n"
-    printf "You'll need to remove $ZSH if you want to re-install.\n"
+    printf "You'll need to remove $OhMyZshDir if you want to re-install.\n"
     exit
   fi
 
@@ -61,7 +57,7 @@ main() {
   fi
 
   Url=https://victor-yarema@github.com/victor-yarema/oh-my-zsh &&
-  env git clone --depth 64 "${Url}" "$ZSH" || {
+  env git clone --depth 64 "${Url}" "$OhMyZshDir" || {
     printf "Error: git clone of oh-my-zsh repo failed\n"
     exit 1
   }
